@@ -1,0 +1,12 @@
+store/
+*.egg-info
+dist
+build
+*.pyc
+.venv
+.vscode
+.vscode/*
+__pycache__
+shell.nix
+.pytest_cache
+.coverage

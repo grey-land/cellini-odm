@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cellini-odm"
+description = "Cellini Object Data Mapper"
+dynamic = ["version"]
+requires-python = ">= 3.8"
+dependencies = [
+    "pydantic==2.7.0",
+    "pyoxigraph==0.3.22",
+]
+readme = "README.md"
+
+# [tool.setuptools.packages.find]
+# where = ["src/cellini"]
+
+[tool.setuptools]
+packages = ["cellini.odm"]
+
+[tool.setuptools.package-data]
