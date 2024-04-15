@@ -1,12 +1,14 @@
 # Cellini Object Data Mapper
 
-*Cellini Object Data Mapper* is a python library, that maps python classes to RDF triples. 
+> *a pythonic data mapper between pyoxigraph store and pydantic models*
 
-It extends pydantic BaseModel and provides the ability to easily implement Web Ontolodies in a pythonic way.
-Additionally it provides the ability to store and query the graph similar to SQLalchemy. The triple store,
-in use is provided by pyoxigraph. 
+Cellini Object Data Mapper extends [pydantic BaseModel](https://github.com/pydantic/pydantic) and makes it ease to work with [Web Ontologies](https://en.wikipedia.org/wiki/Web_Ontology_Language) in a pythonic way.
+It provides the ability to store and query python objects in a triple store, similar to the way SQLalchemy works on sql databases.
+The underline triple store in use is [pyoxigraph](https://github.com/oxigraph/oxigraph). 
 
-See a quick example 
+It is written as part of "cellini" broader project but can work as a standalone library as well.
+
+Here is a quick example 
 
 ```python
 from typing import Optional
@@ -21,11 +23,10 @@ Person(name="John Doe", age=80).save()
 for person in Person.objects.all():
     print(f"{person.name} has reached the age of {person.age}")
 
-"John Doe has reached the age of 80"
+# John Doe has reached the age of 80
 ```
 
-
-Or another one that shows more advanced use
+Here is another more advanced example
 
 ```python
 from typing import List,Optional
@@ -56,35 +57,38 @@ org = Organization(
 
 for s, p, o in org.to_triples():
     print(s, p, o)
-```
 
-would result to following triples
+# <cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Organization>
+# <cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <http://purl.org/dc/terms/identifier> "fa20032a-2898-441f-bd9d-54cb5fe2bfa1"
+# <cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <https://cellini.io/ns/name> "An org"
+# <cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <https://cellini.io/ns/employees> <cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3>
+# <cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag>
+# <cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> <cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd>
+# <cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Employee>
+# <cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
+# <cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <http://purl.org/dc/terms/identifier> "fe589e2e-6086-4183-93fa-4e26a62dbfbd"
+# <cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <https://cellini.io/ns/name> "John Doe"
+# <cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <https://cellini.io/ns/position> "cleaner"
+# <cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_2> <cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61>
+# <cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Employee>
+# <cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
+# <cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <http://purl.org/dc/terms/identifier> "188ee538-4ede-465f-a8e5-663feb95ea61"
+# <cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <https://cellini.io/ns/name> "Jane Doe"
+# <cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <https://cellini.io/ns/position> "CEO"
+# <cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <https://cellini.io/ns/owner> <cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a>
+# <cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Owner>
+# <cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
+# <cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <http://purl.org/dc/terms/identifier> "7ba3ac44-f1d3-481b-80b6-83bca313fc7a"
+# <cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <https://cellini.io/ns/name> "Some owner"
 
-```
-<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Organization>
-<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <http://purl.org/dc/terms/identifier> "fa20032a-2898-441f-bd9d-54cb5fe2bfa1"
-<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <https://cellini.io/ns/name> "An org"
-<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <https://cellini.io/ns/employees> <cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3>
-<cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag>
-<cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> <cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd>
-<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Employee>
-<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
-<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <http://purl.org/dc/terms/identifier> "fe589e2e-6086-4183-93fa-4e26a62dbfbd"
-<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <https://cellini.io/ns/name> "John Doe"
-<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <https://cellini.io/ns/position> "cleaner"
-<cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_2> <cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61>
-<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Employee>
-<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
-<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <http://purl.org/dc/terms/identifier> "188ee538-4ede-465f-a8e5-663feb95ea61"
-<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <https://cellini.io/ns/name> "Jane Doe"
-<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <https://cellini.io/ns/position> "CEO"
-<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <https://cellini.io/ns/owner> <cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a>
-<cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Owner>
-<cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
-<cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <http://purl.org/dc/terms/identifier> "7ba3ac44-f1d3-481b-80b6-83bca313fc7a"
-<cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <https://cellini.io/ns/name> "Some owner"
-```
+org.save()
 
+for employee in Organization.objects.get(org.identifier).employees:
+    print(employee.name, "->", employee.position)
+
+# John Doe -> cleaner
+# Jane Doe -> CEO
+```
 
 ---
 
