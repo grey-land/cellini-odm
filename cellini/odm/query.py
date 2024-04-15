@@ -4,8 +4,8 @@ import uuid
 from typing import Generator, Union, TYPE_CHECKING
 from pyoxigraph import *
 
-from cellini.odm.utils    import literal_python_to_rdf, RDF, DCTERMS
-from cellini.odm.registry import registry
+from cellini.odm.utils import literal_python_to_rdf, RDF, DCTERMS
+from cellini.odm.base  import registry
 
 class Query(object):
 
@@ -14,22 +14,18 @@ class Query(object):
 
     @property
     def query(self):
-        return registry.graph.query
-    
-    @property
-    def graph(self):
-        return registry.graph
+        return registry.triple_store.query
     
     def create(self, obj:'RdfBaseModel', **kwargs):
         for s,p,o in obj.to_triples(**kwargs):
-            self.graph.add(Quad(s, p, o))
+            registry.triple_store.add(Quad(s, p, o))
     
     def exists(self, obj:'RdfBaseModel')->bool:
         return self.query(f"ASK {{ ?s  { DCTERMS.identifier } { literal_python_to_rdf(obj.identifier) } }}")
 
     def delete(self, obj:'RdfBaseModel'):
         for s, p, o in self.query(f"DESCRIBE {obj.__rdf_uri__}"):
-            self.graph.remove(Quad(s, p, o))
+            registry.triple_store.remove(Quad(s, p, o))
 
     def filter(self, **kwargs)->Generator['RdfBaseModel', None, None]:
         filters = []
@@ -51,7 +47,7 @@ class Query(object):
         return self.filter()
 
     def get(self, identifier:Union[str, uuid.UUID])->'RdfBaseModel':
-        return registry.resolve_named_node(NamedNode(f"cellini:{ self.model_class.__rdf_title__() }:{ identifier }"))
+        return registry.resolve_named_node(NamedNode(f"{ self.model_class.__rdf_title__() }:{ identifier }"))
 
     def resolve(self, uri:NamedNode)->'RdfBaseModel':
         return registry.resolve_named_node(uri)

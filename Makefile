@@ -3,10 +3,7 @@ setup:
 	python setup.py install
 
 test: clean setup
-	python -m unittest \
-		test/fields.py \
-		test/test_model.py \
-		test/query.py
+	python -m unittest discover test/
 
 clean:
 	pip uninstall -y cellini-odm
@@ -18,6 +15,5 @@ clean:
 
 coverage: clean setup
 	pip install coverage
-	python -m coverage run --source cellini -m unittest discover test/
+	python -m coverage run --source cellini/odm -m unittest discover test/
 	python -m coverage report --format=markdown
-	

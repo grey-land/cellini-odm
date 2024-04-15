@@ -9,6 +9,7 @@ in use is provided by pyoxigraph.
 See a quick example 
 
 ```python
+from typing import Optional
 from cellini.odm import *
 
 class Person(RdfBaseModel):
@@ -60,31 +61,28 @@ for s, p, o in org.to_triples():
 would result to following triples
 
 ```
-<cellini:Organization:0d7aab80-df35-4cdf-b75c-0893c1551aeb> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Organization>
-<cellini:Organization:0d7aab80-df35-4cdf-b75c-0893c1551aeb> <http://purl.org/dc/terms/identifier> "0d7aab80-df35-4cdf-b75c-0893c1551aeb"
-<cellini:Organization:0d7aab80-df35-4cdf-b75c-0893c1551aeb> <https://cellini.io/ns/name> "An org"
-<cellini:Organization:0d7aab80-df35-4cdf-b75c-0893c1551aeb> <https://cellini.io/ns/employees> <cellini-type:Bag:9010c97c-ba63-483c-b76f-eb1deb9a3037>
-<cellini-type:Bag:9010c97c-ba63-483c-b76f-eb1deb9a3037> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag>
-<cellini-type:Bag:9010c97c-ba63-483c-b76f-eb1deb9a3037> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> <cellini:Employee:9346d71a-5ef8-4c50-8414-0dc776174a09>
-<cellini:Employee:9346d71a-5ef8-4c50-8414-0dc776174a09> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Employee>
-<cellini:Employee:9346d71a-5ef8-4c50-8414-0dc776174a09> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
-<cellini:Employee:9346d71a-5ef8-4c50-8414-0dc776174a09> <http://purl.org/dc/terms/identifier> "9346d71a-5ef8-4c50-8414-0dc776174a09"
-<cellini:Employee:9346d71a-5ef8-4c50-8414-0dc776174a09> <https://cellini.io/ns/name> "John Doe"
-<cellini:Employee:9346d71a-5ef8-4c50-8414-0dc776174a09> <https://cellini.io/ns/position> "cleaner"
-<cellini-type:Bag:9010c97c-ba63-483c-b76f-eb1deb9a3037> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_2> <cellini:Employee:1589fe12-7d94-4c23-b08c-aaaa840eff01>
-<cellini:Employee:1589fe12-7d94-4c23-b08c-aaaa840eff01> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Employee>
-<cellini:Employee:1589fe12-7d94-4c23-b08c-aaaa840eff01> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
-<cellini:Employee:1589fe12-7d94-4c23-b08c-aaaa840eff01> <http://purl.org/dc/terms/identifier> "1589fe12-7d94-4c23-b08c-aaaa840eff01"
-<cellini:Employee:1589fe12-7d94-4c23-b08c-aaaa840eff01> <https://cellini.io/ns/name> "Jane Doe"
-<cellini:Employee:1589fe12-7d94-4c23-b08c-aaaa840eff01> <https://cellini.io/ns/position> "CEO"
-<cellini:Organization:0d7aab80-df35-4cdf-b75c-0893c1551aeb> <https://cellini.io/ns/owners> <cellini-type:Bag:9c35cce5-6fc2-475a-b1e6-88a0778d0f01>
-<cellini-type:Bag:9c35cce5-6fc2-475a-b1e6-88a0778d0f01> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag>
-<cellini-type:Bag:9c35cce5-6fc2-475a-b1e6-88a0778d0f01> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> <cellini:Owner:dee36976-8816-4ea1-b935-eceac41d0899>
-<cellini:Owner:dee36976-8816-4ea1-b935-eceac41d0899> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Owner>
-<cellini:Owner:dee36976-8816-4ea1-b935-eceac41d0899> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
-<cellini:Owner:dee36976-8816-4ea1-b935-eceac41d0899> <http://purl.org/dc/terms/identifier> "dee36976-8816-4ea1-b935-eceac41d0899"
-<cellini:Owner:dee36976-8816-4ea1-b935-eceac41d0899> <https://cellini.io/ns/name> "Some owner"
-<cellini:Owner:dee36976-8816-4ea1-b935-eceac41d0899> <https://cellini.io/ns/share> "100"^^<http://www.w3.org/2001/XMLSchema#integer>
+<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Organization>
+<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <http://purl.org/dc/terms/identifier> "fa20032a-2898-441f-bd9d-54cb5fe2bfa1"
+<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <https://cellini.io/ns/name> "An org"
+<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <https://cellini.io/ns/employees> <cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3>
+<cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag>
+<cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> <cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd>
+<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Employee>
+<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
+<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <http://purl.org/dc/terms/identifier> "fe589e2e-6086-4183-93fa-4e26a62dbfbd"
+<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <https://cellini.io/ns/name> "John Doe"
+<cellini:Employee:fe589e2e-6086-4183-93fa-4e26a62dbfbd> <https://cellini.io/ns/position> "cleaner"
+<cellini:Bag:ca01367e-68a9-4f91-b7d7-bd7b64868ed3> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_2> <cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61>
+<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Employee>
+<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
+<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <http://purl.org/dc/terms/identifier> "188ee538-4ede-465f-a8e5-663feb95ea61"
+<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <https://cellini.io/ns/name> "Jane Doe"
+<cellini:Employee:188ee538-4ede-465f-a8e5-663feb95ea61> <https://cellini.io/ns/position> "CEO"
+<cellini:Organization:fa20032a-2898-441f-bd9d-54cb5fe2bfa1> <https://cellini.io/ns/owner> <cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a>
+<cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Owner>
+<cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://cellini.io/ns/Person>
+<cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <http://purl.org/dc/terms/identifier> "7ba3ac44-f1d3-481b-80b6-83bca313fc7a"
+<cellini:Owner:7ba3ac44-f1d3-481b-80b6-83bca313fc7a> <https://cellini.io/ns/name> "Some owner"
 ```
 
 
@@ -94,9 +92,10 @@ would result to following triples
 
 | Name                        |    Stmts |     Miss |   Cover |
 |---------------------------- | -------: | -------: | ------: |
-| cellini/odm/\_\_init\_\_.py |        2 |        0 |    100% |
-| cellini/odm/model.py        |       98 |        7 |     93% |
-| cellini/odm/query.py        |       39 |        3 |     92% |
-| cellini/odm/registry.py     |       78 |        8 |     90% |
+| cellini/odm/\_\_init\_\_.py |        4 |        0 |    100% |
+| cellini/odm/base.py         |       61 |        9 |     85% |
+| cellini/odm/model.py        |       92 |        7 |     92% |
+| cellini/odm/query.py        |       36 |        3 |     92% |
+| cellini/odm/types.py        |       54 |        3 |     94% |
 | cellini/odm/utils.py        |       66 |       16 |     76% |
-|                   **TOTAL** |  **283** |   **34** | **88%** |
+|                   **TOTAL** |  **313** |   **38** | **88%** |

@@ -121,7 +121,7 @@ class TestRdfBaseModel(unittest.TestCase):
 
     def test_simple_class_defaults(self):
         obj = Simple(number=1, phrase="test")
-        self.assertEqual(obj.__rdf_title__(), "Simple")
+        self.assertEqual(obj.__rdf_title__(), "cellini:Simple")
         self.assertEqual(obj.__rdf_type__().value, "https://cellini.io/ns/Simple")
         self.assertEqual(len(list(obj.__rdf_types__())), 1)
 
@@ -156,7 +156,7 @@ class TestRdfBaseModel(unittest.TestCase):
     def test_nested_class_namednode(self):
         obj = Nested(simple=Simple(number=1, phrase="test"))
         for t in obj.to_triples():
-            registry.graph.add(Quad(*t))
+            registry.triple_store.add(Quad(*t))
 
         a = Nested(simple=obj.simple.__rdf_uri__)
         self.assertEqual(a.simple.number, 1)
@@ -177,7 +177,7 @@ class TestRdfBaseModel(unittest.TestCase):
         obj = DeepNested(nested=Nested(simple=Simple(number=1, phrase="test")))
 
         for t in obj.to_triples():
-            registry.graph.add(Quad(*t))
+            registry.triple_store.add(Quad(*t))
 
         a = DeepNested(nested=obj.nested.__rdf_uri__)
         self.assertEqual(a.nested.identifier, obj.nested.identifier)
@@ -193,7 +193,7 @@ class TestRdfBaseModel(unittest.TestCase):
                         simple=Simple(number=2, phrase="sec")))
 
         for t in obj.to_triples():
-            registry.graph.add(Quad(*t))
+            registry.triple_store.add(Quad(*t))
         
         a = registry.resolve_named_node(obj.__rdf_uri__)
 

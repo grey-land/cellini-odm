@@ -20,63 +20,6 @@ class XSD:
     string = NamedNode("http://www.w3.org/2001/XMLSchema#string")
     boolean = NamedNode("http://www.w3.org/2001/XMLSchema#boolean")
 
-    # base64Binary = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#base64Binary")
-    # bounded = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#bounded")
-    # byte = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#byte")
-    # cardinality = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#cardinality")
-    # dateTimeStamp = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#dateTimeStamp")
-    # day = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#day")
-    # dayTimeDuration = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#dayTimeDuration")
-    # decimal = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#decimal")
-    # double = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#double")
-    # duration = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#duration")
-    # enumeration = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#enumeration")
-    # explicitTimezone = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#explicitTimezone")
-    # fractionDigits = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#fractionDigits")
-    # gDay = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#gDay")
-    # gMonth = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#gMonth")
-    # gMonthDay = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#gMonthDay")
-    # gYear = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#gYear")
-    # gYearMonth = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#gYearMonth")
-    # hexBinary = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#hexBinary")
-    # hour = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#hour")
-    # int = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#int")
-    
-    # language = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#language")
-    # length = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#length")
-    # long = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#long")
-    # maxExclusive = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#maxExclusive")
-    # maxInclusive = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#maxInclusive")
-    # maxLength = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#maxLength")
-    # minExclusive = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#minExclusive")
-    # minInclusive = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#minInclusive")
-    # minLength = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#minLength")
-    # minute = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#minute")
-    # month = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#month")
-    # negativeInteger = NamedNode("http://www.w3.org/2001/XMLSchema#negativeInteger")
-    # nonNegativeInteger = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#nonNegativeInteger")
-    # normalizedString = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#normalizedString")
-    # numeric = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#numeric")
-    # ordered = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#ordered")
-    # pattern = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#pattern")
-    # positiveInteger = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#positiveInteger")
-    # second = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#second")
-    # short = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#short")
-    # time = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#time")
-    # timezoneOffset = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#timezoneOffset")
-    # token = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#token")
-    # totalDigits = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#totalDigits")
-    # unsignedByte = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#unsignedByte")
-    # unsignedInt = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#unsignedInt")
-    # unsignedLong = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#unsignedLong")
-    # unsignedShort = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#unsignedShort")
-    # whiteSpace = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#whiteSpace")
-    # year = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#year")
-    # yearMonthDuration = pyoxigraph.NamedNode("http://www.w3.org/2001/XMLSchema#yearMonthDuration")
-
-
-
-
 @dataclass
 class RDF:
     Bag = NamedNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag")
@@ -117,7 +60,6 @@ def literal_python_to_rdf(value:Any, python_type:Any=None)->Union[None, NamedNod
         return Literal(value.isoformat(), datatype=XSD.date)
 
     raise UnsupportedType(f"! Unknown value type={python_type} for value={value}")
-
 
 def literal_rdf_to_python(value:Union[NamedNode, Literal])->Any:
     """ convert rdf literals to python types """

@@ -6,26 +6,17 @@ from pydantic import Field, BaseModel, model_validator
 from typing import Generator, Any
 from pyoxigraph import *
 
-from cellini.odm.utils    import literal_rdf_to_python, RDF, DCTERMS
-from cellini.odm.registry import registry, python_value_to_triples
-from cellini.odm.query    import Query
+from cellini.odm.utils import literal_rdf_to_python, RDF, DCTERMS
+from cellini.odm.base  import AbstractNamedNode, registry
+from cellini.odm.types import python_value_to_triples
+from cellini.odm.query import Query
 
 
 class UnresovableNode(Exception):
     pass
 
 
-class RdfBaseModel(BaseModel):
-    """
-
-    ...
-    
-    During de-serialization from rdf triples to pydantic we convert triples literal values (str,
-    int, date, ... ) directly and for complex objects we return the named-node type 
-    (pyxoigraph.NamedNode) instead. Then when Pydantic builds the object reaches here
-    that where we further resolve the next value. 
-
-    """
+class RdfBaseModel(BaseModel, AbstractNamedNode):
 
     identifier:uuid.UUID = Field(default_factory=uuid.uuid4,
                                     predicate=DCTERMS.identifier.value,
@@ -34,9 +25,13 @@ class RdfBaseModel(BaseModel):
 
     def __init_subclass__(cls, *args, **kwargs):
         """
+        Helper function that runs when `RdfBaseModel` is subclassed and adds it
+        in the registry (autoregistration).
+        
+        Then it adds a class property (objects) similar to SQLAlchemy to easily
+        query the relevant subclass from rdf triple store.
         """
-        if cls not in registry:
-            registry.add(cls)
+        registry.add(cls)
         cls.objects = Query(model_class=cls)
 
     @classmethod
@@ -44,16 +39,12 @@ class RdfBaseModel(BaseModel):
         return "https://cellini.io/ns/"
 
     @classmethod
-    def __rdf_title_prefix__(cls)->str:
-        return ""
-
-    @classmethod
     def __rdf_title__(cls)->str:
-        return f"{ cls.__rdf_title_prefix__() }{ cls.model_json_schema()['title'] }"
+        return f"{ registry.uri_prefix }{ cls.model_json_schema()['title'] }"
     
     @classmethod
     def __rdf_type__(cls) -> NamedNode:
-        return NamedNode(f"{ cls.__rdf_namespace__() }{ cls.__rdf_title__() }")
+        return NamedNode(f"{ cls.__rdf_namespace__() }{ cls.model_json_schema()['title'] }")
     
     @classmethod
     def __rdf_types__(cls) -> Generator[NamedNode, None, None]:
@@ -97,7 +88,7 @@ class RdfBaseModel(BaseModel):
     @classmethod
     def _get_field_name_from_predicate(cls, predicate:NamedNode)->Field:
         """
-        Returns field for given predicate. 
+        Returns field name for given predicate. 
         """
         for field_name in cls.model_fields.keys():
             if predicate in [ RDF.type ]:
@@ -105,16 +96,6 @@ class RdfBaseModel(BaseModel):
             elif predicate == cls._get_predicate_from_field(field_name):
                 return field_name
         raise ValueError(f'No field match given predicate {predicate}, for class {cls.__rdf_title__()}')
-
-    @property
-    def __rdf_uri__(self)->NamedNode:
-        """
-        Returns the uri of the model.
-
-        This field is used as subject for all triples.
-        """
-        return NamedNode(f"cellini:{ self.__rdf_title__() }:{ self.identifier }")
-
 
     def to_triples(self, recursive=True)->Generator[Triple, None, None]:
         """ 
@@ -134,14 +115,14 @@ class RdfBaseModel(BaseModel):
             # load actual field value
             python_value = getattr(self, field_name)
 
-            # if value is empty, then we skip any triples
+            # if value is empty, then we skip it and go to next field
             if python_value == None:
                 continue
 
             # load predicate from field.
             predicate = self._get_predicate_from_field( field_name )
 
-            # convert python to triples
+            # convert field's value to triples
             for triple in python_value_to_triples(subject, predicate, python_value, recursive=recursive):
                 yield triple
 
@@ -150,25 +131,32 @@ class RdfBaseModel(BaseModel):
     def resolve_named_node(cls, uri:NamedNode):
         data = dict()
 
-        for s, p, o in registry.graph.query(f"DESCRIBE {uri}"):
+        # Request all triples relevant to given uri from triple store. 
+        for s, p, o in registry.triple_store.query(f"DESCRIBE {uri}"):
 
             # get field from predicate 
             field_name = cls._get_field_name_from_predicate(p)
             
+            # if we cant find a field corresponding to given predicate
+            # then we continue to the next triple
             if not field_name:
                 continue
-            
-            # if o.value.startswith("cellini-type:Bag"):
-            #     data[field_name] = Bag.resolve_named_node(o) 
 
-            elif o.value.startswith("cellini"):
+            # At this stage we know that the triple refer to an actual field
+            # So first we check if the field can be resolved (points to a model
+            # in our registry)  
+            if registry.uri_can_resolve(o):
+                # if object points to a model in registry, then we return it
+                # as is and will be resolved at a later stage
                 data[field_name] = o
-
-            else: 
+            
+            # If object doesnt point to a model in our registry, we assume
+            # that is a literal value so we try to convert it back to pythonic 
+            # value
+            else:
                 data[field_name] = literal_rdf_to_python(o)
 
         return cls(**data)
-
 
     def save(self, recursive=True):
         if self.__class__.objects.exists(self):
