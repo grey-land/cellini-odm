@@ -74,7 +74,13 @@ class RdfBaseModel(BaseModel, AbstractNamedNode):
         Returns predicate for given field name. 
         """
         predicate = None
-        field_info = cls.model_fields[field_name]
+        field_info = None
+        
+        if field_name in cls.model_fields.keys():
+            field_info = cls.model_fields[field_name]
+        elif field_name in cls.model_computed_fields.keys():
+            field_info = cls.model_computed_fields[field_name]
+            
         if field_info and field_info.json_schema_extra:
             predicate = field_info.json_schema_extra.get('predicate')
         if not predicate:

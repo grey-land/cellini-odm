@@ -4,6 +4,7 @@ from pyoxigraph  import NamedNode, Literal
 from typing      import Any, Union
 from datetime    import datetime, date
 from pydantic    import AnyHttpUrl, AnyUrl, NonNegativeInt
+from enum        import EnumType
 
 @dataclass
 class DCTERMS:
@@ -31,10 +32,16 @@ class ObjectAlreadyExists(Exception):
 class UnsupportedType(Exception):
     pass
 
+
 def literal_python_to_rdf(value:Any, python_type:Any=None)->Union[None, NamedNode, Literal]:
     """ convert standard python types to rdf literals """
     if value == None:
         return None
+
+    # If value is enum, then we handle the internal value and not the actual enum 
+    if isinstance(type(value), EnumType):
+        value = value.value
+
     if python_type == None:
         python_type = type(value)
     # string

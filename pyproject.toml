@@ -17,6 +17,9 @@ readme = "README.md"
 # where = ["src/cellini"]
 
 [tool.setuptools]
-packages = ["cellini.odm"]
+packages = [
+  "cellini",
+  "cellini.odm"
+]
 
 [tool.setuptools.package-data]
